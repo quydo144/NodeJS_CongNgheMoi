@@ -2,24 +2,24 @@ http:
   port: 3000
 admin:
   port: 9876
-  host: localhost
+  host: 13.229.207.6
 apiEndpoints:
   api:
-    host: localhost
+    host: 13.229.207.6
     paths: '/ip'
   user:
-    host: localhost
+    host: 54.254.201.191
     paths: ['/updatepass', '/checksdt', '/dangnhap', '/id=:id', '/sdt=:sdt', '/']
   contact:
-    host: localhost
+    host: 13.250.34.4
     paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest']
 serviceEndpoints:
   httpbin:
     url: 'https://httpbin.org'
   userService:
-    url : 'http://localhost:4000'
+    url : 'http://54.254.201.191:4000'
   contactService:
-    url : 'https://localhost:5000'
+    url : 'https://13.250.34.4:5000'
 policies:
   - basic-auth
   - cors
