@@ -1,0 +1,62 @@
+http:
+  port: 3000
+admin:
+  port: 9876
+  host: localhost
+apiEndpoints:
+  api:
+    host: localhost
+    paths: '/ip'
+  user:
+    host: localhost
+    paths: ['/updatepass', '/checksdt', '/dangnhap', '/id=:id', '/sdt=:sdt', '/']
+  contact:
+    host: localhost
+    paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest']
+serviceEndpoints:
+  httpbin:
+    url: 'https://httpbin.org'
+  userService:
+    url : 'http://localhost:4000'
+  contactService:
+    url : 'https://localhost:5000'
+policies:
+  - basic-auth
+  - cors
+  - expression
+  - key-auth
+  - log
+  - oauth2
+  - proxy
+  - rate-limit
+pipelines:
+  default:
+    apiEndpoints:
+      - api
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: httpbin 
+              changeOrigin: true
+  userPipeline:
+    apiEndpoints:
+      - user
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: userService 
+              changeOrigin: true
+  contactPipeline:
+    apiEndpoints:
+      - contact
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: contactService 
+              changeOrigin: true
