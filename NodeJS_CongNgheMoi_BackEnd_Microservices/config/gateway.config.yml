@@ -15,9 +15,9 @@ serviceEndpoints:
   httpbin:
     url: 'https://httpbin.org'
   userService:
-    url : 'https://54.254.201.191:4000'
+    url : 'http://54.254.201.191:4000'
   contactService:
-    url : 'https://13.250.34.4:5000'
+    url : 'http://13.250.34.4:5000'
 policies:
   - basic-auth
   - cors
