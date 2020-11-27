@@ -86,5 +86,18 @@ module.exports = {
                     return callBack(null, results);
                 }
             );
+    },
+
+    getListNotification: async (data, callBack) =>{
+        await pool.request()
+            .input('MaNguoiDung_Mot', mssql.sql.Int, data.MaNguoiDung_Mot)
+            .query('select * from NguoiDung where MaNguoiDung IN (SELECT MaNguoiDung_Mot FROM DanhSachBanBe Where TrangThai = 0 AND MaNguoiDung_Hai = @MaNguoiDung_Mot AND HoatDong != @MaNguoiDung_Mot) Union select * from NguoiDung  where MaNguoiDung IN (SELECT MaNguoiDung_Hai FROM DanhSachBanBe Where TrangThai = 0 AND MaNguoiDung_Mot = @MaNguoiDung_Mot AND HoatDong != @MaNguoiDung_Mot)',
+                (error, results, fields) => {
+                    if (error) {
+                        callBack(error);
+                    }
+                    return callBack(null, results.recordset);
+                }
+            );
     }
 };

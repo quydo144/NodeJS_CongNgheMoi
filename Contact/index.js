@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const service = require("./api/service")
 const listen_port = 5000;
 
 const server = require('http').Server(app)
@@ -23,6 +24,7 @@ io.on('connection', (socket)=>{
     socket.on('DaGuiLoiMoiKetBan', (data)=>{
         socket.broadcast.to(data.NguoiNhanLoiMoi).emit("ThongBaoLoiMoiKetBanMoi", data)
     })
+    
 })
 
 server.listen(listen_port, () => {
