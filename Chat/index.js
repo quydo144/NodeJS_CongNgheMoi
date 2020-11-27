@@ -10,7 +10,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 
 const userRouter = require('./api/router.js')
-app.use("", userRouter)
+app.use(userRouter)
 
 app.listen(listen_port, () => {
     console.log("Listening port: " + listen_port)
