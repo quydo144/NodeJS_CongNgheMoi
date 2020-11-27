@@ -12,7 +12,7 @@ apiEndpoints:
     host: 13.229.207.6
     paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest', '/sendRequestAddFriend']
   chat:
-    host: 3.1.218.234
+    host: 13.229.207.6
     paths: ['/addRoom', '/deleteRoom', '/findIdRoom']
 serviceEndpoints:
   httpbin:
