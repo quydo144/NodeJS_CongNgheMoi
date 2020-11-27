@@ -11,6 +11,9 @@ apiEndpoints:
   contact:
     host: 13.229.207.6
     paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest']
+  chat:
+    host: 3.1.218.234
+    paths: ['/addRoom', '/deleteRoom', '/findIdRoom']
 serviceEndpoints:
   httpbin:
     url: 'https://httpbin.org'
@@ -18,6 +21,8 @@ serviceEndpoints:
     url : 'http://54.254.201.191:4000'
   contactService:
     url : 'http://13.250.34.4:5000'
+  chatService:
+    url : 'http://3.1.218.234:6000'
 policies:
   - basic-auth
   - cors
@@ -57,4 +62,14 @@ pipelines:
       - proxy:
           - action:
               serviceEndpoint: contactService 
+              changeOrigin: true
+  chatPipeline:
+    apiEndpoints:
+      - chat
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: chatService 
               changeOrigin: true
