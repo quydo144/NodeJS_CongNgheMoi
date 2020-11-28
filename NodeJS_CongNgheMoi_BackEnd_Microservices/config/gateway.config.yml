@@ -21,6 +21,8 @@ serviceEndpoints:
     url : 'http://54.254.201.191:4000'
   contactService:
     url : 'http://13.250.34.4:5000'
+  contactSocket:
+    url : 'http://13.250.34.4:5000'
   chatService:
     url : 'http://3.1.218.234:6000'
 policies:
@@ -72,4 +74,12 @@ pipelines:
       - proxy:
           - action:
               serviceEndpoint: chatService 
+              changeOrigin: true
+  contactSocketPipeline:
+    policies:
+    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+    # - key-auth:
+      - proxy:
+          - action:
+              serviceEndpoint: contactSocket 
               changeOrigin: true
