@@ -1,5 +1,5 @@
 const aws = require('aws-sdk');
-const { resolve } = require('path');
+const e = require('express');
 
 aws.config.update({
     accessKeyId: process.env.ACCESS_KEY_ID,
@@ -9,9 +9,10 @@ aws.config.update({
 
 const tableName = "ConversationName"
 const docClient = new aws.DynamoDB.DocumentClient();
+const dynamodb = new aws.DynamoDB();
 
 function findIDRoomByIdUser12(id_user_1, id_user_2) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         docClient.scan({
             TableName: tableName,
             FilterExpression: "#id_user_1=:id_user_1 and #id_user_2=:id_user_2",
@@ -23,8 +24,8 @@ function findIDRoomByIdUser12(id_user_1, id_user_2) {
                 ":id_user_1": id_user_1,
                 ":id_user_2": id_user_2,
             }
-        }, function (err, data) {
-            if (err){
+        }, (err, data) => {
+            if (err) {
                 reject(err)
             }
             else {
@@ -35,7 +36,7 @@ function findIDRoomByIdUser12(id_user_1, id_user_2) {
 }
 
 function findIDRoomByIdUser21(id_user_2, id_user_1) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         docClient.scan({
             TableName: tableName,
             FilterExpression: "#id_user_1=:id_user_1 and #id_user_2=:id_user_2",
@@ -47,8 +48,8 @@ function findIDRoomByIdUser21(id_user_2, id_user_1) {
                 ":id_user_1": id_user_2,
                 ":id_user_2": id_user_1,
             }
-        }, function (err, data) {
-            if (err){
+        }, (err, data) => {
+            if (err) {
                 reject(err)
             }
             else {
@@ -59,11 +60,11 @@ function findIDRoomByIdUser21(id_user_2, id_user_1) {
 }
 
 function putNameRoom(Item) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         docClient.put({
             TableName: tableName,
             Item: Item
-        }, function (err, data) {
+        }, (err, data) => {
             if (err)
                 reject(err);
             else {
@@ -74,14 +75,14 @@ function putNameRoom(Item) {
 }
 
 function deleteRoomByID(id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         docClient.delete({
             TableName: tableName,
             Key: {
                 "id_room": id
             },
             ReturnValues: "ALL_OLD",
-        }, function (err, data) {
+        }, (err, data) => {
             if (err)
                 reject(err);
             else {
@@ -92,4 +93,92 @@ function deleteRoomByID(id) {
     });
 }
 
-module.exports = { findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID }
+function createTable(tableName) {
+    const params = {
+        TableName: tableName,
+        AttributeDefinitions: [
+            {
+                AttributeName: "id",
+                AttributeType: "S"
+            }
+        ],
+        KeySchema: [
+            {
+                AttributeName: "id",
+                KeyType: "HASH"
+            }
+        ],
+        ProvisionedThroughput: {
+            ReadCapacityUnits: 5,
+            WriteCapacityUnits: 5
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        dynamodb.createTable(params, (err, data) => {
+            if (err)
+                reject(err)
+            else
+                resolve(data)
+        })
+    })
+}
+
+function putItemMessage(Item, tableName) {
+    return new Promise((resolve, reject) => {
+        docClient.put({
+            TableName: tableName,
+            Item: Item
+        }, (err, data) => {
+            if (err)
+                reject(err);
+            else {
+                resolve(true)
+            }
+        });
+    });
+}
+
+function scanItemMessage(tableName, itemLast){
+    const params = {
+        TableName: tableName,
+        Limit: 4,
+        ExclusiveStartKey : {
+            time: itemLast
+        }
+    }
+
+    return new Promise((resolve, reject) =>{
+        docClient.scan(params, (err, data)=>{
+            if(err){
+                reject(err)
+            }
+            else{
+                console.log(data)
+                resolve(data)
+            }
+        })
+    })
+}
+
+function scanFirstItemMessage(tableName){
+    const params = {
+        TableName: tableName
+        // Limit: 11,
+    }
+
+    return new Promise((resolve, reject) =>{
+        docClient.scan(params, (err, data)=>{
+            if(err){
+                reject(err)
+            }
+            else{
+                console.log(data)
+                resolve(data)
+            }
+        })
+    })
+}
+
+module.exports = { findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID, createTable, 
+    putItemMessage, scanItemMessage, scanFirstItemMessage }
