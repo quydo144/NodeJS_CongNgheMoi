@@ -20,6 +20,11 @@ io.sockets.on('connection', (socket) => {
         socket.Phong = dang_ky.TenPhong
     })
 
+    //Lắng Nghe Người Dùng Nhập Tin Nhắn
+    socket.on('CLIENT_TYPING', (data)=>{
+        socket.broadcast.to(socket.Phong).emit('SERVER_IS_TYPING', data)
+    })
+
     socket.on('CLIENT_GUI_TIN_NHAN', (data) => {
         let ms = Date.now();
         let date = new Date(ms);
@@ -35,9 +40,11 @@ io.sockets.on('connection', (socket) => {
             message: data.message,
             type_message: data.type_message
         }
-        service_chat.putItemMessage(params, data.tableName).then(result =>{
-            if(result)
+
+        service_chat.putItemMessage(params, data.tableName, (result)=>{
+            if(result){
                 socket.broadcast.to(socket.Phong).emit('SERVER_GUI_TIN_NHAN', data)
+            }
         })
     })
 });

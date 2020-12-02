@@ -1,4 +1,5 @@
 const aws = require('aws-sdk')
+const jp = require('jsonpath')
 
 aws.config.update({
     accessKeyId: process.env.ACCESS_KEY_ID,
@@ -9,6 +10,16 @@ aws.config.update({
 const tableName = "ConversationName"
 const docClient = new aws.DynamoDB.DocumentClient();
 const dynamodb = new aws.DynamoDB();
+
+function checkTableExists(tableName, callback) {
+    dynamodb.listTables().promise().then(data => {
+        const exists = data.TableNames.filter(name => {
+            return name === tableName;
+        }).length > 0
+
+        callback(exists)
+    })
+}
 
 function findIDRoomByIdUser12(id_user_1, id_user_2) {
     return new Promise((resolve, reject) => {
@@ -131,19 +142,34 @@ function createTable(tableName) {
     })
 }
 
-function putItemMessage(Item, tableName) {
-    return new Promise((resolve, reject) => {
-        docClient.put({
-            TableName: tableName,
-            Item: Item
-        }, (err, data) => {
-            if (err)
-                reject(err);
-            else {
-                resolve(true)
-            }
-        });
-    });
+function putItemMessage(Item, tableName, callback) {
+    checkTableExists(tableName, (result) => {
+        if (result) {
+            docClient.put({
+                TableName: tableName,
+                Item: Item
+            }, (err, data) => {
+                if (err)
+                    callback(err)
+                else {
+                    callback(true)
+                }
+            });
+        } else {
+            createTable(tableName).then(data => {
+                docClient.put({
+                    TableName: tableName,
+                    Item: Item
+                }, (err, data) => {
+                    if (err)
+                        callback(err)
+                    else {
+                        callback(true)
+                    }
+                });
+            })
+        }
+    })
 }
 
 function scanItemMessage(tableName, itemLast) {
@@ -169,7 +195,6 @@ function scanItemMessage(tableName, itemLast) {
 }
 
 function scanFirstItemMessage(id_room) {
-
     return new Promise((resolve, reject) => {
         var params = {
             TableName: id_room
@@ -186,7 +211,23 @@ function scanFirstItemMessage(id_room) {
     })
 }
 
+function getAllRoomFor_A_User(id_user_1) {
+    return new Promise((resolve, reject) => {
+        var params = {
+            TableName: tableName,
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
+                reject(err)
+            }
+            else {
+                resolve(jp.query(data, '$.Items[?(@.id_user_1 ==' + id_user_1 + '|| @.id_user_2 ==' + id_user_1 + ')]'))
+            }
+        })
+    })
+}
+
 module.exports = {
     findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID, createTable,
-    putItemMessage, scanItemMessage, scanFirstItemMessage
+    putItemMessage, scanItemMessage, scanFirstItemMessage, getAllRoomFor_A_User
 }
