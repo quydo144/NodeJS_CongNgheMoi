@@ -1,5 +1,4 @@
-const aws = require('aws-sdk');
-const e = require('express');
+const aws = require('aws-sdk')
 
 aws.config.update({
     accessKeyId: process.env.ACCESS_KEY_ID,
@@ -100,12 +99,20 @@ function createTable(tableName) {
             {
                 AttributeName: "id",
                 AttributeType: "S"
+            },
+            {
+                AttributeName: "time",
+                AttributeType: "S"
             }
         ],
         KeySchema: [
             {
                 AttributeName: "id",
                 KeyType: "HASH"
+            },
+            {
+                AttributeName: "time",
+                KeyType: "RANGE"
             }
         ],
         ProvisionedThroughput: {
@@ -139,21 +146,21 @@ function putItemMessage(Item, tableName) {
     });
 }
 
-function scanItemMessage(tableName, itemLast){
+function scanItemMessage(tableName, itemLast) {
     const params = {
         TableName: tableName,
         Limit: 4,
-        ExclusiveStartKey : {
+        ExclusiveStartKey: {
             time: itemLast
         }
     }
 
-    return new Promise((resolve, reject) =>{
-        docClient.scan(params, (err, data)=>{
-            if(err){
+    return new Promise((resolve, reject) => {
+        docClient.scan(params, (err, data) => {
+            if (err) {
                 reject(err)
             }
-            else{
+            else {
                 console.log(data)
                 resolve(data)
             }
@@ -161,24 +168,25 @@ function scanItemMessage(tableName, itemLast){
     })
 }
 
-function scanFirstItemMessage(tableName){
-    const params = {
-        TableName: tableName
-        // Limit: 11,
-    }
+function scanFirstItemMessage(id_room) {
 
-    return new Promise((resolve, reject) =>{
-        docClient.scan(params, (err, data)=>{
-            if(err){
+    return new Promise((resolve, reject) => {
+        var params = {
+            TableName: id_room
+            // Limit: 11,
+        }
+        docClient.scan(params, (err, data) => {
+            if (err) {
                 reject(err)
             }
-            else{
-                console.log(data)
+            else {
                 resolve(data)
             }
         })
     })
 }
 
-module.exports = { findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID, createTable, 
-    putItemMessage, scanItemMessage, scanFirstItemMessage }
+module.exports = {
+    findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID, createTable,
+    putItemMessage, scanItemMessage, scanFirstItemMessage
+}

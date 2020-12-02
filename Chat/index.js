@@ -22,14 +22,14 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('CLIENT_GUI_TIN_NHAN', (data) => {
         let ms = Date.now();
-        // let date = new Date(ms);
-        // let year = date.getFullYear();
-        // let month = ("0" + (date.getMonth() + 1)).slice(-2);
-        // let day = ("0" + date.getDate()).slice(-2);
+        let date = new Date(ms);
+        let year = date.getFullYear();
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let day = ("0" + date.getDate()).slice(-2);
 
         let params = {
-            // id: day + '/' + month + '/' + year,
-            id: ms.toString(),
+            id: day + '/' + month + '/' + year,
+            time: ms.toString(),
             userSend: data.userSend,
             userReceive: data.userReceive,
             message: data.message,
