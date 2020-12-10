@@ -2,31 +2,30 @@ const services = require('../api/service')
 
 module.exports = {
     uploadProductsImages(req, res) {
-        console.log(req)
         services.uploadS3(req, res, (error) => {
             if (error) {
+                console.log(error)
                 res.status(500).json({
-                    status: 'fail',
-                    error: error
+                    success: 0,
+                    Message: "Lỗi không up được file"
                 });
             } else {
                 if (req.files === undefined) {
                     res.status(500).json({
-                        status: 'fail',
-                        message: 'Error: No File Selected'
+                        success: 0,
+                        message: "Không có ảnh được chọn"
                     });
                 } else {
                     let fileArray = req.files, fileLocation;
-                    const images = [];
+                    const images = []
                     for (let i = 0; i < fileArray.length; i++) {
                         fileLocation = fileArray[i].location;
                         images.push(fileLocation)
                     }
                     return res.status(200).json({
-                        status: 'ok',
+                        success: 1,
                         locationArray: images
                     });
-
                 }
             }
         })

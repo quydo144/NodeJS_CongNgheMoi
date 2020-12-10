@@ -21,7 +21,6 @@ const docClient = new aws.DynamoDB.DocumentClient();
 const dynamodb = new aws.DynamoDB();
 
 const uploadS3 = multer({
-    dest: 'images/',
     storage: multerS3({
         s3: s3,
         acl: 'public-read',
@@ -30,12 +29,12 @@ const uploadS3 = multer({
             callBack(null, { fieldName: file.fieldname })
         },
         key: (req, file, callBack) => {
-            var fullPath = file.originalname;//If you want to save into a folder concat de name of the folder to the path
+            let fullPath = Date.now().toString() + "." + file.originalname.split('.')[1]
             callBack(null, fullPath)
         }
     }),
-    limits: { fileSize: 10000000 }, // In bytes: 10000000 bytes = 10 MB
-}).array('photos', 10)
+    limits: { fileSize: 10000000 }, // Max 10 MB
+}).array('photos')
 
 function checkTableExists(tableName, callback) {
     dynamodb.listTables().promise().then(data => {
