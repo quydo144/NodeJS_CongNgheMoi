@@ -17,13 +17,13 @@ module.exports = {
                     message: "Có lỗi xảy ra"
                 });
             }
-            if (results["recordset"] == undefined){
+            if (results["rowsAffected"] == 0){
                 return res.json({
                     success: 2,
-                    message: "Đã được kết bạn"
+                    message: "Đã gửi lời mời kết bạn"
                 });
             }
-            if (results != 0) {
+            if (results["rowsAffected"] != 0) {
                 return res.json({
                     success: 1,
                     message: "Gửi yêu cầu thành công"

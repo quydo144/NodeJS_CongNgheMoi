@@ -8,7 +8,7 @@ const {
     scanItemMessage,
     scanFirstItemMessage,
     getAllRoomFor_A_User,
-    checkTableExists
+    uploadProductsImages
 } 
 = require('../api/controller')
 
@@ -19,5 +19,6 @@ router.post('/createTable', createTable)
 router.post('/scanItemMessage', scanItemMessage)
 router.post('/scanFirstItemMessage', scanFirstItemMessage)
 router.get('/getAllRoom/id=:id', getAllRoomFor_A_User)
+router.post('/upLoadS3', uploadProductsImages)
 
 module.exports = router

@@ -48,20 +48,22 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on('YeuCauCapNhatDanhBa', (data) => {
-        let temp = {
-            MaNguoiDung_Mot: data.MaNguoiDung_Mot
-        }
+    // socket.on('YeuCauCapNhatDanhBa', (data) => {
+    //     let temp = {
+    //         MaNguoiDung_Mot: data.MaNguoiDung_Mot
+    //     }
 
-        service_friend.getListFriend(temp, (err, result) => {
-            if (result.recordset.length > 0) {
-                socket.broadcast.to(data.SoDienThoai).emit("ThongBaoCapNhatDanhBa", {
-                    success: true,
-                    danhsach: result.recordset
-                })
-            }
-        })
-    })
+    //     service_friend.getListFriend(temp, (err, result) => {
+    //         if (result.recordset.length > 0) {
+    //             socket.broadcast.to(data.SoDienThoai).emit("ThongBaoCapNhatDanhBa", {
+    //                 success: true,
+    //                 danhsach: result.recordset
+    //             })
+    //             console.log(result.recordset)
+    //         }
+    //     })
+
+    // })
 })
 
 server.listen(listen_port, () => {

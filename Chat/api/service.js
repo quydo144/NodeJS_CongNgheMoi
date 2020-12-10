@@ -1,5 +1,7 @@
 const aws = require('aws-sdk')
 const jp = require('jsonpath')
+const multer = require('multer')
+const multerS3 = require('multer-s3')
 
 aws.config.update({
     accessKeyId: process.env.ACCESS_KEY_ID,
@@ -7,9 +9,33 @@ aws.config.update({
     region: "ap-southeast-1"
 })
 
+const s3 = new aws.S3({
+    accessKeyId: process.env.ACCESS_KEY_ID,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY,
+    region: "ap-southeast-1"
+})
+
+const bucket = "zaloimposter"
 const tableName = "ConversationName"
 const docClient = new aws.DynamoDB.DocumentClient();
 const dynamodb = new aws.DynamoDB();
+
+const uploadS3 = multer({
+    dest: 'images/',
+    storage: multerS3({
+        s3: s3,
+        acl: 'public-read',
+        bucket: bucket,
+        metadata: (req, file, callBack) => {
+            callBack(null, { fieldName: file.fieldname })
+        },
+        key: (req, file, callBack) => {
+            var fullPath = file.originalname;//If you want to save into a folder concat de name of the folder to the path
+            callBack(null, fullPath)
+        }
+    }),
+    limits: { fileSize: 10000000 }, // In bytes: 10000000 bytes = 10 MB
+}).array('photos', 10)
 
 function checkTableExists(tableName, callback) {
     dynamodb.listTables().promise().then(data => {
@@ -229,5 +255,6 @@ function getAllRoomFor_A_User(id_user_1) {
 
 module.exports = {
     findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID, createTable,
-    putItemMessage, scanItemMessage, scanFirstItemMessage, getAllRoomFor_A_User, checkTableExists
+    putItemMessage, scanItemMessage, scanFirstItemMessage, getAllRoomFor_A_User, 
+    checkTableExists, uploadS3
 }
