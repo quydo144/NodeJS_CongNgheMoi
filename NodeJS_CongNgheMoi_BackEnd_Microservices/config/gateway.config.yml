@@ -13,7 +13,7 @@ apiEndpoints:
     paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest', '/sendRequestAddFriend']
   chat:
     host: 13.229.207.6
-    paths: ['/addRoom', '/deleteRoom', '/findIdRoom', '/createTable', '/scanFirstItemMessage', '/getAllRoom/id={id}']
+    paths: ['/addRoom', '/deleteRoom', '/findIdRoom', '/createTable', '/scanFirstItemMessage', '/getAllRoom/id=:id', '/upLoadS3']
 serviceEndpoints:
   httpbin:
     url: 'https://httpbin.org'
