@@ -2,6 +2,9 @@ const aws = require('aws-sdk')
 const jp = require('jsonpath')
 const multer = require('multer')
 const multerS3 = require('multer-s3')
+const mssql = require("../dbConnect.js");
+const pool = mssql.pool;
+mssql.poolConnection;
 
 aws.config.update({
     accessKeyId: process.env.ACCESS_KEY_ID,
@@ -62,8 +65,7 @@ function findIDRoomByIdUser12(id_user_1, id_user_2) {
         }, (err, data) => {
             if (err) {
                 reject(err)
-            }
-            else {
+            } else {
                 resolve(data.Items[0])
             }
         });
@@ -86,8 +88,7 @@ function findIDRoomByIdUser21(id_user_2, id_user_1) {
         }, (err, data) => {
             if (err) {
                 reject(err)
-            }
-            else {
+            } else {
                 resolve(data.Items[0])
             }
         });
@@ -131,8 +132,7 @@ function deleteRoomByID(id) {
 function createTable(tableName) {
     const params = {
         TableName: tableName,
-        AttributeDefinitions: [
-            {
+        AttributeDefinitions: [{
                 AttributeName: "id",
                 AttributeType: "S"
             },
@@ -141,8 +141,7 @@ function createTable(tableName) {
                 AttributeType: "S"
             }
         ],
-        KeySchema: [
-            {
+        KeySchema: [{
                 AttributeName: "id",
                 KeyType: "HASH"
             },
@@ -210,8 +209,7 @@ function scanItemMessage(tableName, itemLast) {
         docClient.scan(params, (err, data) => {
             if (err) {
                 reject(err)
-            }
-            else {
+            } else {
                 console.log(data)
                 resolve(data)
             }
@@ -223,13 +221,12 @@ function scanFirstItemMessage(id_room) {
     return new Promise((resolve, reject) => {
         var params = {
             TableName: id_room
-            // Limit: 11,
+                // Limit: 11,
         }
         docClient.scan(params, (err, data) => {
             if (err) {
                 reject(err)
-            }
-            else {
+            } else {
                 resolve(data)
             }
         })
@@ -244,8 +241,7 @@ function getAllRoomFor_A_User(id_user_1) {
         docClient.scan(params, (err, data) => {
             if (err) {
                 reject(err)
-            }
-            else {
+            } else {
                 resolve(jp.query(data, '$.Items[?(@.id_user_1 ==' + id_user_1 + '|| @.id_user_2 ==' + id_user_1 + ')]'))
             }
         })
@@ -253,7 +249,51 @@ function getAllRoomFor_A_User(id_user_1) {
 }
 
 module.exports = {
-    findIDRoomByIdUser12, findIDRoomByIdUser21, putNameRoom, deleteRoomByID, createTable,
-    putItemMessage, scanItemMessage, scanFirstItemMessage, getAllRoomFor_A_User, 
-    checkTableExists, uploadS3
+    findIDRoomByIdUser12,
+    findIDRoomByIdUser21,
+    putNameRoom,
+    deleteRoomByID,
+    createTable,
+    putItemMessage,
+    scanItemMessage,
+    scanFirstItemMessage,
+    getAllRoomFor_A_User,
+    checkTableExists,
+    uploadS3,
+    createGroup: async(data, callBack) => {
+        await pool.request()
+            .input('MaNhom', mssql.sql.VarChar, data.MaNhom)
+            .input('TenNhom', mssql.sql.NVarChar, data.TenNhom)
+            .input('TruongNhom', mssql.sql.Int, data.TruongNhom)
+            .query('INSERT INTO Nhom(MaNhom, TenNhom, TruongNhom) VALUES (@MaNhom, @TenNhom, @TruongNhom)',
+                (error, results, filter) => {
+                    if (error) {
+                        callBack(error)
+                    }
+                    return callBack(null, results)
+                })
+    },
+    addItemGroup: async(data, callBack) => {
+        await pool.request()
+            .input('MaNhom', mssql.sql.VarChar, data.MaNhom)
+            .input('MaThanhVien', mssql.sql.Int, data.MaThanhVien)
+            .query('INSERT INTO ThanhVien(MaNhom, MaThanhVien) VALUES (@MaNhom, @MaThanhVien)',
+                (error, results, filter) => {
+                    if (error) {
+                        callBack(error)
+                    }
+                    return callBack(null, results)
+                })
+    },
+    getListGroup: async(maThanhVien, callBack) => {
+        await pool.request()
+            .input('MaThanhVien', mssql.sql.Int, maThanhVien)
+            .query('select * from ThanhVien where MaThanhVien = @MaThanhVien',
+                (error, results, filter) => {
+                    if (error) {
+                        callBack(error)
+                    }
+                    return callBack(null, results)
+                })
+    }
 }

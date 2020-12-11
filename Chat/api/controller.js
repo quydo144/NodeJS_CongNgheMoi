@@ -1,4 +1,9 @@
 const services = require('../api/service')
+const {
+    createGroup,
+    addItemGroup,
+    getListGroup
+} = require('./service')
 
 module.exports = {
     uploadProductsImages(req, res) {
@@ -16,7 +21,8 @@ module.exports = {
                         message: "Không có ảnh được chọn"
                     });
                 } else {
-                    let fileArray = req.files, fileLocation;
+                    let fileArray = req.files,
+                        fileLocation;
                     const images = []
                     for (let i = 0; i < fileArray.length; i++) {
                         fileLocation = fileArray[i].location;
@@ -44,10 +50,10 @@ module.exports = {
     deleteNameRoom(req, res, next) {
         const room = req.body;
         (services.findIDRoomByIdUser12(room.id_user_1, room.id_user_2).then(data => {
-            if (data) {
-                return services.deleteRoomByID(data.id_room);
-            }
-        }),
+                if (data) {
+                    return services.deleteRoomByID(data.id_room);
+                }
+            }),
             services.findIDRoomByIdUser21(room.id_user_2, room.id_user_1).then(data => {
                 if (data) {
                     return services.deleteRoomByID(data.id_room);
@@ -65,15 +71,15 @@ module.exports = {
         services.findIDRoomByIdUser12(room.id_user_1, room.id_user_2).then(data => {
             if (data) {
                 res.json({ success: 1, message: "Tồn tại mã room", id_room: data.id_room })
-            }
-            else {
+            } else {
                 services.findIDRoomByIdUser21(room.id_user_2, room.id_user_1).then(data => {
                     if (data) {
                         res.json({
-                            success: 1, message: "Tồn tại mã room", id_room: data.id_room
+                            success: 1,
+                            message: "Tồn tại mã room",
+                            id_room: data.id_room
                         })
-                    }
-                    else
+                    } else
                         res.json({ success: 0, message: "Không tồn tại room" })
                 })
             }
@@ -110,6 +116,67 @@ module.exports = {
 
         services.getAllRoomFor_A_User(id_user_1).then(data => {
             res.json(data)
+        })
+    },
+
+    createGroup: (req, res) => {
+        let maNhom = Date.now().toString()
+        const body = req.body
+        body.MaNhom = maNhom
+        createGroup(body, (err, results) => {
+            if (err) {
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                });
+            } else {
+                if (results.rowsAffected[0] != 0) {
+                    return res.json({
+                        success: 1,
+                        message: "Tạo nhóm thành công",
+                        MaNhom: maNhom
+                    });
+                }
+            }
+        })
+    },
+
+    addItemGroup: (req, res) => {
+        const body = req.body
+        addItemGroup(body, (err, results) => {
+            if (err) {
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                })
+            } else {
+                if (results.rowsAffected[0] != 0) {
+                    return res.json({
+                        success: 1,
+                        message: "Thêm thành viên thành công"
+                    });
+                }
+            }
+        })
+    },
+
+    getListGroup: (req, res) => {
+        const maThanhVien = req.params.id
+        getListGroup(maThanhVien, (err, results) => {
+            if (err) {
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                })
+            } else {
+                if (results.rowsAffected[0] != 0) {
+                    return res.json({
+                        success: 1,
+                        message: "Danh sách nhóm của thành viên",
+                        data: results.recordset
+                    })
+                }
+            }
         })
     }
 }

@@ -19,8 +19,7 @@ module.exports = {
         checkSdt(sdt, (err, results) => {
             if (err) {
                 console.log(err);
-            }
-            else {
+            } else {
                 if (results.recordset.length > 0) {
                     return res.status(500).json({
                         success: 0,
@@ -51,8 +50,7 @@ module.exports = {
         checkSdt(sdt, (err, results) => {
             if (err) {
                 console.log(err);
-            }
-            else {
+            } else {
                 if (results.recordset.length > 0) {
                     return res.status(500).json({
                         success: 0,
@@ -79,8 +77,7 @@ module.exports = {
                     success: 0,
                     data: "Số điện thoại hoặc mật khẩu không hợp lệ"
                 });
-            }
-            else {
+            } else {
                 if (results.Status == 0) {
                     return res.json({
                         success: 2,
@@ -88,7 +85,7 @@ module.exports = {
                     });
                 }
 
-                const result = compareSync(body.Password, results.Password);    //Kiểm tra pass
+                const result = compareSync(body.Password, results.Password); //Kiểm tra pass
                 if (result) {
                     results.Password = undefined;
                     let token = sign({ result: results }, "imposter", { expiresIn: "7d" });
@@ -207,5 +204,5 @@ module.exports = {
                 });
             }
         });
-    },
+    }
 };
