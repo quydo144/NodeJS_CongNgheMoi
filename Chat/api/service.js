@@ -36,7 +36,11 @@ const uploadS3 = multer({
             callBack(null, fullPath)
         }
     })
+<<<<<<< HEAD
     // limits: { fileSize: 10000000 }, // Max 10 MB
+=======
+    //limits: { fileSize: 10000000 }, // Max 10 MB
+>>>>>>> f5c56813ad926abab10028c9ff09337052fd0e81
 }).any()
 
 function checkTableExists(tableName, callback) {
