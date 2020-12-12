@@ -35,8 +35,8 @@ const uploadS3 = multer({
             let fullPath = Date.now().toString() + "." + file.originalname.split('.')[1]
             callBack(null, fullPath)
         }
-    }),
-    limits: { fileSize: 10000000 }, // Max 10 MB
+    })
+    // limits: { fileSize: 10000000 }, // Max 10 MB
 }).any()
 
 function checkTableExists(tableName, callback) {
