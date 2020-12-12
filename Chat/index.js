@@ -31,15 +31,15 @@ io.sockets.on('connection', (socket) => {
         let year = date.getFullYear();
         let month = ("0" + (date.getMonth() + 1)).slice(-2);
         let day = ("0" + date.getDate()).slice(-2);
-        let params = {
+        params = {
             id: day + '/' + month + '/' + year,
             time: ms.toString(),
             userSend: data.userSend,
             userReceive: data.userReceive,
             message: data.message,
+            fileName: data.fileName,
             type_message: data.type_message
         }
-
         service_chat.putItemMessage(params, data.tableName, (result)=>{
             if(result){
                 socket.broadcast.to(socket.Phong).emit('SERVER_GUI_TIN_NHAN', data)

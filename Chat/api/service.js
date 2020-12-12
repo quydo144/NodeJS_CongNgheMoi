@@ -37,7 +37,7 @@ const uploadS3 = multer({
         }
     }),
     limits: { fileSize: 10000000 }, // Max 10 MB
-}).array('photos')
+}).any()
 
 function checkTableExists(tableName, callback) {
     dynamodb.listTables().promise().then(data => {
