@@ -46,6 +46,28 @@ io.sockets.on('connection', (socket) => {
             }
         })
     })
+
+    socket.on('CLIENT_GUI_TIN_NHAN_NHOM', (data) => {
+        let ms = Date.now();
+        let date = new Date(ms);
+        let year = date.getFullYear();
+        let month = ("0" + (date.getMonth() + 1)).slice(-2);
+        let day = ("0" + date.getDate()).slice(-2);
+        params = {
+            id: day + '/' + month + '/' + year,
+            time: ms.toString(),
+            userSend: data.userSend,
+            message: data.message,
+            fileName: data.fileName,
+            type_message: data.type_message,
+            nameUser: data.nameUser
+        }
+        service_chat.putItemMessage(params, data.tableName, (result)=>{
+            if(result){
+                socket.broadcast.to(socket.Phong).emit('SERVER_GUI_TIN_NHAN_NHOM', data)
+            }
+        })
+    })
 });
 
 const userRouter = require('./api/router.js')

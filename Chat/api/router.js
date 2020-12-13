@@ -11,7 +11,9 @@ const {
     uploadProductsImages,
     createGroup,
     addItemGroup,
-    getListGroup
+    getListGroup,
+    checkTruongNhom,
+    getListThanhVien
 } = require('../api/controller')
 
 router.post('/addRoom', addNameRoom)
@@ -25,5 +27,7 @@ router.post('/upLoadS3', uploadProductsImages)
 router.post('/createGroup', createGroup)
 router.post('/addItemGroup', addItemGroup)
 router.get('/getListGroup=:id', getListGroup)
+router.get('/checkTruongNhom=:id', checkTruongNhom)
+router.get('/getListThanhVien=:id', getListThanhVien)
 
 module.exports = router

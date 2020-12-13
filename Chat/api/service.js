@@ -36,11 +36,6 @@ const uploadS3 = multer({
             callBack(null, fullPath)
         }
     })
-<<<<<<< HEAD
-    // limits: { fileSize: 10000000 }, // Max 10 MB
-=======
-    //limits: { fileSize: 10000000 }, // Max 10 MB
->>>>>>> f5c56813ad926abab10028c9ff09337052fd0e81
 }).any()
 
 function checkTableExists(tableName, callback) {
@@ -292,7 +287,29 @@ module.exports = {
     getListGroup: async(maThanhVien, callBack) => {
         await pool.request()
             .input('MaThanhVien', mssql.sql.Int, maThanhVien)
-            .query('select * from ThanhVien where MaThanhVien = @MaThanhVien',
+            .query('(select * from Nhom where MaNhom in ( select MaNhom from ThanhVien where MaThanhVien = @MaThanhVien )) Union (select * from Nhom where TruongNhom = @MaThanhVien)',
+                (error, results, filter) => {
+                    if (error) {
+                        callBack(error)
+                    }
+                    return callBack(null, results)
+                })
+    },
+    checkTruongNhom: async(maNhom, callBack) => {
+        await pool.request()
+            .input('MaNhom', mssql.sql.VarChar, maNhom)
+            .query('select * from Nhom where MaNhom = @MaNhom',
+                (error, results, filter) => {
+                    if (error) {
+                        callBack(error)
+                    }
+                    return callBack(null, results)
+                })
+    },
+    getListThanhVien: async(maNhom, callBack) => {
+        await pool.request()
+            .input('MaNhom', mssql.sql.VarChar, maNhom)
+            .query('select * from ThanhVien where MaNhom = @MaNhom',
                 (error, results, filter) => {
                     if (error) {
                         callBack(error)

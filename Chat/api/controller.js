@@ -2,7 +2,9 @@ const services = require('../api/service')
 const {
     createGroup,
     addItemGroup,
-    getListGroup
+    getListGroup,
+    checkTruongNhom,
+    getListThanhVien
 } = require('./service')
 
 module.exports = {
@@ -50,10 +52,10 @@ module.exports = {
     deleteNameRoom(req, res, next) {
         const room = req.body;
         (services.findIDRoomByIdUser12(room.id_user_1, room.id_user_2).then(data => {
-                if (data) {
-                    return services.deleteRoomByID(data.id_room);
-                }
-            }),
+            if (data) {
+                return services.deleteRoomByID(data.id_room);
+            }
+        }),
             services.findIDRoomByIdUser21(room.id_user_2, room.id_user_1).then(data => {
                 if (data) {
                     return services.deleteRoomByID(data.id_room);
@@ -173,7 +175,67 @@ module.exports = {
                     return res.json({
                         success: 1,
                         message: "Danh sách nhóm của thành viên",
+                        dataGroup: results.recordset
+                    })
+                }
+                else {
+                    return res.json({
+                        success: 2,
+                        message: "Danh sách nhóm của thành viên trống"
+                    })
+                }
+            }
+        })
+    },
+
+    checkTruongNhom: (req, res) => {
+        const maNhom = req.params.id
+        checkTruongNhom(maNhom, (err, results) => {
+            if(err){
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                })
+            }
+            else{
+                if (results.rowsAffected[0] == 1) {
+                    return res.json({
+                        success: 1,
+                        message: "Danh sách nhóm",
+                        dataGroup: results.recordset
+                    })
+                }
+                else {
+                    return res.json({
+                        success: 2,
+                        message: "Không tìm ra nhóm cần tìm"
+                    })
+                }
+            }
+        })
+    },
+
+    getListThanhVien: (req, res) => {
+        const maNhom = req.params.id
+        getListThanhVien(maNhom, (err, results) => {
+            if(err){
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                })
+            }
+            else{
+                if (results.rowsAffected[0] != 0) {
+                    return res.json({
+                        success: 1,
+                        message: "Danh sách thành viên",
                         data: results.recordset
+                    })
+                }
+                else {
+                    return res.json({
+                        success: 2,
+                        message: "Danh sách thành viên trống"
                     })
                 }
             }
