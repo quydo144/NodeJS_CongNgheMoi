@@ -1,7 +1,6 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config()
-const uuid = require('uuid')
 const app = express()
 const service_chat = require("./api/service")
 const server = require('http').Server(app);
@@ -65,6 +64,19 @@ io.sockets.on('connection', (socket) => {
         service_chat.putItemMessage(params, data.tableName, (result)=>{
             if(result){
                 socket.broadcast.to(socket.Phong).emit('SERVER_GUI_TIN_NHAN_NHOM', data)
+            }
+        })
+    })
+
+    socket.on('CLIENT_GUI_THONG_BAO_ADD_GROUP', (data) => {
+        const id = data.idUser
+        service_chat.getListGroup(id, (err, results) => {
+            if(results.recordset.length >  0){
+                socket.broadcast.to(socket.Phong).emit('SERVER_SEND_THONG_BAO_ADD_GROUP', {
+                    success: 1,
+                    idUser: id,
+                    dataGroup: results.recordset
+                })
             }
         })
     })
