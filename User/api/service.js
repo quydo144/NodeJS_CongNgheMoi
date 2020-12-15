@@ -3,7 +3,7 @@ const pool = mssql.pool;
 mssql.poolConnection;
 
 module.exports = {
-    checkSdt: async(sdt, callBack) => {
+    checkSdt: async (sdt, callBack) => {
         await pool.request()
             .input('SoDienThoai', mssql.sql.VarChar, sdt)
             .query('select * from NguoiDung where SoDienThoai = @SoDienThoai',
@@ -16,7 +16,7 @@ module.exports = {
             );
     },
 
-    create: async(data, callBack) => {
+    create: async (data, callBack) => {
         await pool.request()
             .input('HoTen', mssql.sql.NVarChar, data.HoTen)
             .input('SoDienThoai', mssql.sql.VarChar, data.SoDienThoai)
@@ -31,7 +31,7 @@ module.exports = {
             );
     },
 
-    updateUser: async(data, callBack) => {
+    updateUser: async (data, callBack) => {
         await pool.request()
             .input('MaNguoiDung', mssql.sql.NVarChar, data.MaNguoiDung)
             .input('HoTen', mssql.sql.NVarChar, data.HoTen)
@@ -48,7 +48,7 @@ module.exports = {
             );
     },
 
-    getUserBySdt: async(sdt, callBack) => {
+    getUserBySdt: async (sdt, callBack) => {
         var value = sdt;
         await pool.request()
             .input('value', mssql.sql.VarChar, value)
@@ -62,7 +62,7 @@ module.exports = {
             );
     },
 
-    getUserById: async(id, callBack) => {
+    getUserById: async (id, callBack) => {
         var value = id;
         await pool.request()
             .input('value', mssql.sql.Int, value)
@@ -76,7 +76,7 @@ module.exports = {
             );
     },
 
-    updatePassword: async(data, callBack) => {
+    updatePassword: async (data, callBack) => {
         var sdt = data.SoDienThoai;
         var pass = data.Password;
         await pool.request()
@@ -90,5 +90,36 @@ module.exports = {
                     return callBack(null, results);
                 }
             );
+    },
+
+    getListGoiY: (data, callBack) => {
+        var array = []
+        data.forEach(e => {
+            var promise = new Promise((resolve, reject) => {
+                pool.request()
+                    .input('SoDienThoai', mssql.sql.VarChar, e)
+                    .query('select *from NguoiDung where SoDienThoai = @SoDienThoai',
+                        (err, results) => {
+                            if (err) {
+                                reject(err)
+                            }
+                            else {
+                                resolve(results)
+                            }
+                        })
+            })
+            array.push(promise)
+        });
+        Promise.all(array).then(value => {
+            const results = []
+            value.forEach(e => {
+                if(e.rowsAffected[0] == 1){
+                    results.push(e.recordset[0])
+                }
+            });
+            return callBack(null, results)
+        }).catch(err => {
+            return callBack(err)
+        })
     }
-};
+}

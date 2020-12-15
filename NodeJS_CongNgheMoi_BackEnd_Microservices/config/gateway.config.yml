@@ -7,10 +7,10 @@ apiEndpoints:
     paths: '/ip'
   user:
     host: 13.229.207.6
-    paths: ['/updatepass', '/checksdt', '/dangnhap', '/id=:id', '/sdt=:sdt', '/']
+    paths: ['/updatepass', '/checksdt', '/dangnhap', '/id=:id', '/sdt=:sdt', '/', '/getListGoiY']
   contact:
     host: 13.229.207.6
-    paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest', '/sendRequestAddFriend']
+    paths: ['/getListFriend', '/getlistrequestfriend', '/getTrangThaiFriend','/deleterequest', '/acceptrequest', '/sendRequestAddFriend', '/getListSendRequestFriend']
   chat:
     host: 13.229.207.6
     paths: ['/addRoom', '/deleteRoom', '/findIdRoom', '/createTable', '/scanFirstItemMessage', 

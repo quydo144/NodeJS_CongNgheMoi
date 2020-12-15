@@ -4,7 +4,8 @@ const {
     deleteRequestFriend,
     acceptRequestFriend,
     getListRequestFriend,
-    getTrangThaiFriend
+    getTrangThaiFriend,
+    getListSendRequestFriend
 } = require("./service.js");
 
 module.exports = {
@@ -150,5 +151,29 @@ module.exports = {
                 message: message
             });
         });
-    }
+    },
+
+    getListSendRequestFriend: (req, res) => {
+        const data = req.body
+        getListSendRequestFriend(data, (err, results) => {
+            if (err) {
+                return res.status(500).json({
+                    success: 0,
+                    message: "Lỗi kết nối"
+                });
+            }
+            let temp = JSON.parse(JSON.stringify(results));
+            if (temp.rowsAffected[0] == 0) {
+                return res.json({
+                    success: 0,
+                    message: "Không tìm thấy"
+                });
+            }
+            return res.json({
+                success: 1,
+                message: "Danh sách lời kết bạn",
+                danhsach: temp.recordset
+            });
+        });
+    },
 };

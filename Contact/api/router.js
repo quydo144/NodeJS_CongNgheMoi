@@ -12,7 +12,8 @@ const {
   deleteRequestFriend,
   getListFriend,
   getListRequestFriend,
-  getTrangThaiFriend
+  getTrangThaiFriend,
+  getListSendRequestFriend
 } = require("./controller.js");
 
 router.post("/sendRequestAddFriend", sendRequestAddFriend);
@@ -21,4 +22,5 @@ router.post("/deleterequest", deleteRequestFriend);
 router.post("/getListFriend", getListFriend);
 router.post("/getlistrequestfriend", getListRequestFriend);
 router.post("/getTrangThaiFriend", getTrangThaiFriend);
+router.post("/getListSendRequestFriend", getListSendRequestFriend)
 module.exports = router;

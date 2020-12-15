@@ -4,7 +4,8 @@ const {
     getUserById,
     updateUser,
     checkSdt,
-    updatePassword
+    updatePassword,
+    getListGoiY
 } = require("./service.js");
 
 const { hashSync, genSaltSync, compareSync } = require("bcrypt");
@@ -204,5 +205,24 @@ module.exports = {
                 });
             }
         });
+    },
+
+    getListGoiY: (req, res) => {
+        const data = req.body.list
+        getListGoiY(data, (err, results) => {
+            if (err) {
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                });
+            }
+            else {
+                return res.json({
+                    success: 1,
+                    message: "Danh sách gợi ý",
+                    danhsach: results
+                })
+            }
+        })
     }
 };
