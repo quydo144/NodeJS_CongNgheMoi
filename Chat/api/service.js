@@ -316,5 +316,17 @@ module.exports = {
                     }
                     return callBack(null, results)
                 })
+    },
+
+    getAllDsThanhVien: async(maNhom, callBack) => {
+        await pool.request()
+        .input('MaNhom', mssql.sql.VarChar, maNhom)
+        .query('select * from NguoiDung where MaNguoiDung IN (select truongnhom from nhom where manhom = @MaNhom) Union select * from NguoiDung where MaNguoiDung IN (select mathanhvien from thanhvien where manhom = @MaNhom)',
+            (error, results, filter) => {
+                if (error) {
+                    callBack(error)
+                }
+                return callBack(null, results)
+            })
     }
 }

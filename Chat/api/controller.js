@@ -4,7 +4,8 @@ const {
     addItemGroup,
     getListGroup,
     checkTruongNhom,
-    getListThanhVien
+    getListThanhVien,
+    getAllDsThanhVien
 } = require('./service')
 
 module.exports = {
@@ -230,6 +231,33 @@ module.exports = {
                         success: 1,
                         message: "Danh sách thành viên",
                         data: results.recordset
+                    })
+                }
+                else {
+                    return res.json({
+                        success: 2,
+                        message: "Danh sách thành viên trống"
+                    })
+                }
+            }
+        })
+    },
+
+    getAllDsThanhVien: (req, res) => {
+        const maNhom = req.params.id
+        getAllDsThanhVien(maNhom, (err, results) => {
+            if(err){
+                return res.json({
+                    success: 0,
+                    message: "Có lỗi xảy ra"
+                })
+            }
+            else{
+                if (results.rowsAffected[0] != 0) {
+                    return res.json({
+                        success: 1,
+                        message: "Danh sách tất cả thành viên",
+                        danhsach: results.recordset
                     })
                 }
                 else {

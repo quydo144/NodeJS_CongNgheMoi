@@ -13,7 +13,8 @@ const {
     addItemGroup,
     getListGroup,
     checkTruongNhom,
-    getListThanhVien
+    getListThanhVien,
+    getAllDsThanhVien
 } = require('../api/controller')
 
 router.post('/addRoom', addNameRoom)
@@ -29,5 +30,6 @@ router.post('/addItemGroup', addItemGroup)
 router.get('/getListGroup=:id', getListGroup)
 router.get('/checkTruongNhom=:id', checkTruongNhom)
 router.get('/getListThanhVien=:id', getListThanhVien)
+router.get('/getAllDsThanhVien=:id', getAllDsThanhVien);
 
 module.exports = router

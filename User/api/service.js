@@ -37,8 +37,9 @@ module.exports = {
             .input('HoTen', mssql.sql.NVarChar, data.HoTen)
             .input('NgaySinh', mssql.sql.DateTime, data.NgaySinh)
             .input('GioiTinh', mssql.sql.Bit, data.GioiTinh)
+            .input('Avartar', mssql.sql.NVarChar, data.Avartar)
             .input('Password', mssql.sql.VarChar, data.Password)
-            .query('UPDATE NguoiDung set HoTen = @HoTen, NgaySinh = @NgaySinh, GioiTinh = @GioiTinh, Password = @Password WHERE MaNguoiDung = @MaNguoiDung',
+            .query('UPDATE NguoiDung set HoTen = @HoTen, NgaySinh = @NgaySinh, Avartar = @Avartar, GioiTinh = @GioiTinh, Password = @Password WHERE MaNguoiDung = @MaNguoiDung',
                 (error, results, fields) => {
                     if (error) {
                         callBack(error);
